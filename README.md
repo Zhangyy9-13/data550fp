@@ -44,7 +44,7 @@
 2.  From the project root directory, execute:
 
 ``` bash
-make report
+make
 ```
 
 3.  This will:
