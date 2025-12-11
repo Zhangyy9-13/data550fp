@@ -11,3 +11,12 @@ install:
 .PHONY: clean
 clean:
 	rm -f output/*.rds && rm -f report.html && rm -f .processed_data
+
+# Build Docker image
+docker-build:
+	docker build -t data550fp-image .
+
+# Generate report using Docker
+docker-report:
+	mkdir -p report
+	docker run --rm -v "$(PWD):/project" zhangyy9/data550fp-image:latest Rscript code/02_render_report.R

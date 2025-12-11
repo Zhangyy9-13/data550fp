@@ -1,74 +1,139 @@
 # Cognitive Decline Analysis
 
-> Analysis of cognitive decline related indicators using CDC data (2015–2022)
+Analysis of cognitive decline related indicators using CDC data (2015–2022)
 
-------------------------------------------------------------------------
+## Project Overview
 
-## Initial code description
+This project analyzes cognitive decline indicators using CDC data spanning from 2015 to 2022. The analysis includes summary statistics and trend visualization of cognitive decline metrics.
 
-`code/01_process_data.R`
+## Docker Setup
 
--   processes the CDC cognitive decline dataset
--   generates the derived datasets `derived_data.rds` and `trend_data.rds` in the `output/` folder
+### Building the Docker Image
 
-`code/02_render_report.R`
+To build the Docker image locally:
 
--   renders `report.Rmd` into `report.html`
+``` bash
+docker build -t zhangyy9/data550fp-image:latest .
+```
 
-`report.Rmd`
+Or use the Makefile:
 
--   reads data from the `output/` folder
--   generates a summary table and a trend figure
--   creates the final HTML report
+``` bash
+make docker-build
+```
 
-`Makefile`
+### DockerHub Image
 
--   contains rules for building the report
--   `make report` will generate the required `.rds` files and render `report.html`
+The pre-built Docker image is publicly available on DockerHub:
 
-`output/`
+**🐳 <https://hub.docker.com/r/zhangyy9/data550fp-image>**
 
--   stores processed `.rds` datasets used in the report
--   e.g., `derived_data.rds` and `trend_data.rds`
+You can pull it directly:
 
-`report.html`
+``` bash
+docker pull zhangyy9/data550fp-image:latest
+```
 
--   the final report generated from `report.Rmd`
+### Generating the Report with Docker (Recommended)
 
-------------------------------------------------------------------------
+To automatically generate the report using Docker:
 
-## How to generate the final report
+``` bash
+make docker-report
+```
 
-1.  Make sure you have installed the required R packages: `dplyr`, `ggplot2`, `kableExtra`, and `here`.
+This command will: 1. Pull the latest Docker image from DockerHub (if not already available locally) 2. Create a `report/` directory in your project folder 3. Run the analysis inside a Docker container with all dependencies pre-installed 4. Generate the report and save it to the `report/` directory
 
-2.  From the project root directory, execute:
+**Note:** If you encounter renv-related errors, temporarily rename `.Rprofile`:
+
+``` bash
+mv .Rprofile .Rprofile.bak
+make docker-report
+mv .Rprofile.bak .Rprofile  # Restore after running
+```
+
+### System Compatibility
+
+The Makefile automatically handles differences between operating systems: - **Mac/Linux**: Works out of the box - **Windows (Git Bash)**: Automatically adjusts file paths for proper volume mounting
+
+## Local Development (Without Docker)
+
+### Requirements
+
+Make sure you have installed the required R packages: `dplyr`, `ggplot2`, `kableExtra`, and `here`.
+
+### Generate Report Locally
+
+From the project root directory, execute:
 
 ``` bash
 make
 ```
 
-3.  This will:
+This will: \* Run `code/01_process_data.R` to generate `.rds` files in the `output/` folder \* Run `code/02_render_report.R` to render `report.Rmd` and create `report.html` \* The final report is saved as `report.html` in the project root
 
-    -   Run `code/01_process_data.R` to generate `.rds` files in the `output/` folder
-    -   Run `code/02_render_report.R` to render `report.Rmd` and create `report.html`
+## Project Structure
 
-4.  The final report is saved as `report.html` in the project root.
+```         
+.
+├── Dockerfile                    # Docker image definition
+├── Makefile                      # Automation commands
+├── README.md                     # This file
+├── report.Rmd                    # R Markdown report template
+├── code/
+│   ├── 01_process_data.R        # Data processing script
+│   └── 02_render_report.R       # Report rendering script
+├── output/                       # Processed datasets
+│   ├── derived_data.rds         # Summary statistics
+│   └── trend_data.rds           # Trend data
+├── report/                       # Docker-generated reports
+│   └── report.html              # Final report (from Docker)
+└── renv/                         # R package management
+    └── renv.lock
+```
 
-------------------------------------------------------------------------
+## Code Description
 
-## Code and data description
+### `code/01_process_data.R`
 
--   This table summarizes the average and standard deviation of cognitive decline indicators.
+-   Processes the CDC cognitive decline dataset
+-   Generates the derived datasets `derived_data.rds` and `trend_data.rds` in the `output/` folder
 
--   This figure shows trends of cognitive decline indicators across years 2015–2022.
+### `code/02_render_report.R`
 
-### Table generation
+-   Renders `report.Rmd` into `report.html`
 
--   The summary table is generated from the `output/derived_data.rds` dataset
--   Code responsible: the `# Summary Table` code chunk in `report.Rmd`
+### `report.Rmd`
 
-### Figure generation
+-   Reads data from the `output/` folder
+-   Generates a summary table and a trend figure
+-   Creates the final HTML report
 
--   The trend figure is generated from the `output/trend_data.rds` dataset
+## Output Description
 
--   Code responsible: the `# Trend Over Time` code chunk in `report.Rmd`
+### Summary Table
+
+-   Summarizes the average and standard deviation of cognitive decline indicators
+-   Generated from `output/derived_data.rds`
+-   Code location: `# Summary Table` code chunk in `report.Rmd`
+
+### Trend Figure
+
+-   Shows trends of cognitive decline indicators across years 2015–2022
+-   Generated from `output/trend_data.rds`
+-   Code location: `# Trend Over Time` code chunk in `report.Rmd`
+
+## Makefile Targets
+
+-   `make` or `make report` - Generate report locally (without Docker)
+-   `make docker-build` - Build the Docker image locally
+-   `make docker-push` - Push the image to DockerHub
+-   `make docker-report` - Generate report using Docker (recommended for reproducibility)
+-   `make clean` - Remove generated reports
+-   `make help` - Show available commands
+
+## Author
+
+Yuyao Zhang\
+Emory University - DATA 550\
+Fall 2025

@@ -1,0 +1,32 @@
+~# Generated reports
+report/
+report.html
+*.html
+
+# RStudio files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.RData
+.Rhistory
+
+# renv library
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/staging/
+
+# macOS
+.DS_Store
+renv/.DS_Store
+
+# Temporary files
+*.bak
+.Rprofile.bak
+
+# Processed data outputs (optional)
+output/*.rds~
